@@ -1,4 +1,7 @@
 #include<bits/stdc++.h>
+#include<fstream>
+#include<stdlib.h>
+#include<string.h>
 #include<conio.h>
 #include<windows.h>
 using namespace std;
@@ -24,11 +27,200 @@ class bank
         void search();
         void transaction();
         void remove();
+        void login();
+        void registr();
+        void forgot();
+        void start();
     };
-int main(){
+main(){
     bank b;
-    b.choice();
+    b.start();
     return 0;
+}
+void bank::start(){
+    int choice;
+     cout<<"\n\n\n\t   __      __   ___  | |   ___    ___    _ __ ___     ___ \n ";
+			cout<<"\t   \\ \\ /\\ / /  / _ \\ | |  / __|  / _ \\  | '_ ` _ \\   / _ \\ \n";
+            cout<<"\t    \\ V  V /  |  __/ | | | (__  | (_) | | | | | | | |  __/ \n";
+            cout<<"\t     \\_/\\_/    \\___| |_|  \\___|  \\___/  |_| |_| |_|  \\___| \n"<<endl;
+                cout<<"\n\t\t\t      TO BANKING MANAGEMENT"<<endl;
+            cout << "\n\t    ________________________ SYSTEM _________________________\n\n\n";
+
+    cout << "\t\t\t* Press 1 For Login            " << endl;
+    cout << "\t\t\t* Press 2 For Registration     " << endl;
+    cout << "\t\t\t* Press 3 For Forgot Password  " << endl;
+    cout << "\t\t\t* Press 4 For Quit             " << endl;
+
+    cout << "\n\t\t\t\t Enter Your choice : ";
+    cin >> choice;
+    cout << endl;
+    switch (choice)
+    {
+    case 1:
+        bank::login();
+        break;
+    case 2:
+       bank::registr();
+        break;
+    case 3:
+        bank::forgot();
+        break;
+    case 4:
+
+        cout << "Thanks for using this program!!!\n\n";
+        break;
+    default:
+        system("cls");
+        cout << "You've made a mistake , give it a try again\n"
+             << endl;
+    }
+}
+void bank::login(){
+    {
+    int count;
+    string user, pass, u, p;
+    system("cls");
+    cout << "please enter the following Details." << endl;
+    cout << "Enter  The USERNAME : ";
+    cin >> user;
+    cout << "Enter  The PASSWORD : ";
+    cin >> pass;
+
+    ifstream input("Bank.txt");
+    while (input >> u >> p)
+    {
+        if (u == user && p == pass)
+
+        {
+            count = 1;
+            system("cls");
+        }
+    }
+    input.close();
+    if (count == 1)
+    {
+        cout << "\n\t\t\tHello " << user << "\n\t\t\tLOGIN SUCCESS\n\t\t\tWe're glad that you're here.\n\t\t\tThanks for logging in!!!\n";
+        cin.get();
+        cin.get();
+        bank::choice();
+    }
+    else
+    {
+        cout << "\nLOGIN ERROR\nPlease Check your Username and Password\n";
+        main();
+    }
+}
+}
+void bank::registr(){
+    string reguser, regpass, ru, rp;
+    system("cls");
+    cout << "Enter the Username : ";
+    cin >> reguser;
+    cout << "\nEnter the Password : ";
+    cin >> regpass;
+
+    ofstream reg("Bank.txt", ios::app);
+    reg << reguser << ' ' << regpass << endl;
+    system("cls");
+    cout << "\nRegistration Successful\n";
+    bank::login();
+}
+void bank::forgot(){
+        int ch;
+    system("cls");
+    cout << "\n\t$$Are You Forgotten Your Password ? Don't Worry we are Here For Help!!$$\n";
+    cout << "\n\t\t----------------------------------------------------------"<<endl;
+    cout << "\t\t| If You Search your Id by Username Then Choose Option 1 |" << endl;
+    cout << "\t\t----------------------------------------------------------"<<endl;
+    cout << "\t\t| If You Search your ID by Password Then Choose Option 2 |" << endl;
+    cout << "\t\t----------------------------------------------------------"<<endl;
+    cout << "\t\t| If You Want to Go Back to Main Menu Then Choose Option 3|"<< endl;
+    cout << "\t\t-----------------------------------------------------------"<<endl;
+    cout << "\n\n\t\t\tEnter your choice : ";
+    cin >> ch;
+    switch (ch)
+    {
+    case 1:
+    {
+        int count = 0;
+        string searchuser, su, sp;
+        cout << "\nEnter your remembered Username : ";
+        cin >> searchuser;
+
+        ifstream searchu("Bank.txt");
+        while (searchu >> su >> sp)
+        {
+            if (su == searchuser)
+            {
+                count = 1;
+            }
+        }
+        searchu.close();
+        if (count == 1)
+        {
+            cout << "\n\nAccount found\n";
+            cout << "\nYour password is : " << sp;
+            cin.get();
+            cin.get();
+            system("cls");
+            main();
+        }
+        else
+        {
+            cout << "\nSorry, Your userID is not found in our Database.\n";
+            cout << "\nPlease kindly contact your system Administrator for more details. \n";
+            cin.get();
+            cin.get();
+            main();
+        }
+        break;
+    }
+    case 2:
+    {
+        int count = 0;
+        string searchpass, su2, sp2;
+        cout << "\nEnter the password you remember : ";
+        cin >> searchpass;
+
+        ifstream searchp("Bank.txt");
+        while (searchp >> su2 >> sp2)
+        {
+            if (sp2 == searchpass)
+            {
+                count = 1;
+            }
+        }
+        searchp.close();
+        if (count == 1)
+        {
+            cout << "\nYour Password is Found in the database : \n";
+            cout << "\nYour ID is : " << su2;
+            cin.get();
+            cin.get();
+            system("cls");
+            main();
+        }
+        else
+        {
+            cout << "Sorry, We cannot found your password in our Database. \n";
+            cout << "\nkindly contact your Administrator for more Information.\n";
+            cin.get();
+            cin.get();
+            main();
+        }
+
+        break;
+    }
+
+    case 3:
+    {
+        cin.get();
+        main();
+    }
+    default:
+        cout << "Sorry, You entered wrong choice. Try again!!!" << endl;
+        forgot();
+    }
 }
 void bank::choice(){
     char ch;
