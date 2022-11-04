@@ -2,8 +2,6 @@ from tkinter import *
 import tkinter.messagebox as MessageBox
 import mysql.connector as mysql
 
-user_admin = "a"
-password_admin = "a"
 G_userid = ""
 G_amount = ""
 G_address = ""
@@ -38,29 +36,6 @@ def insert():
         MessageBox.showinfo("Insert Status", "Inserted Successfully")
         con.close()
 
-
-def admin_insert():
-    name = apg1_entry.get()
-    password = apg1_entry2.get()
-
-    if (name == "" or password == ""):
-        MessageBox.showinfo("Insert Status", "All fields are required")
-    else:
-        con = mysql.connect(host="localhost", user="root",
-                            password="ankon20158", database="test")
-        cursor = con.cursor()
-        cursor.execute("insert into admin values('" +
-                       name+"','"+password+"')")
-        cursor.execute("commit")
-
-        apg1_entry.delete(0, 'end')
-        apg1_entry2.delete(0, 'end')
-
-        apg2_show()
-        MessageBox.showinfo("Insert Status", "Inserted Successfully")
-        con.close()
-
-
 def delete():
     id = pg2_e_id.get()
     if (id == ""):
@@ -81,7 +56,6 @@ def delete():
         pg2_show()
         MessageBox.showinfo("Delete Status", "Deleted Successfully")
         con.close()
-
 
 def update():
     id = pg2_e_id.get()
@@ -111,84 +85,6 @@ def update():
         MessageBox.showinfo("Update Status", "Updated Successfully")
         con.close()
 
-
-def user_update():
-    phone = upg2_e_phone.get()
-    password = upg2_e_pass.get()
-    address = upg2_e_address.get()
-
-    if (phone == "" or password == "" or address == ""):
-        MessageBox.showinfo("Update Status", "All fields are required")
-    else:
-        con = mysql.connect(host="localhost", user="root",
-                            password="ankon20158", database="test")
-        cursor = con.cursor()
-        cursor.execute("update bankdata set password='"+password +
-                       "',phone='"+phone + "',address='"+address + "' where id='"+G_userid+"'")
-        cursor.execute("commit")
-
-        upg2_e_pass.delete(0, 'end')
-        upg2_e_phone.delete(0, 'end')
-        upg2_e_address.delete(0, 'end')
-        upg2_show()
-        MessageBox.showinfo("Update Status", "Updated Successfully")
-        con.close()
-
-
-def user_withdraw():
-    wd = upg2_e_trans.get()
-    dpo = "0"
-
-    if (wd == ""):
-        MessageBox.showinfo("Update Status", "No amount written to withdraw")
-    else:
-        con = mysql.connect(host="localhost", user="root",
-                            password="ankon20158", database="test")
-        cursor = con.cursor()
-        cursor.execute("insert into transactions values('" +
-                       G_userid+"','"+wd+"','"+dpo+"')")
-        cursor.execute("commit")
-
-        upg2_e_trans.delete(0, 'end')
-        global G_amount
-        tmp = int(G_amount) - int(wd)
-        G_amount = str(tmp)
-        cursor.execute("update bankdata set amount='" +
-                       G_amount + "' where id='"+G_userid+"'")
-        cursor.execute("commit")
-
-        upg2_show()
-        MessageBox.showinfo("Update Status", "Withdrawn Successfully")
-        con.close()
-
-
-def user_deposit():
-    dpo = upg2_e_trans.get()
-    wd = "0"
-
-    if (dpo == ""):
-        MessageBox.showinfo("Update Status", "No amount written to deposit")
-    else:
-        con = mysql.connect(host="localhost", user="root",
-                            password="ankon20158", database="test")
-        cursor = con.cursor()
-        cursor.execute("insert into transactions values('" +
-                       G_userid+"','"+wd+"','"+dpo+"')")
-        cursor.execute("commit")
-
-        upg2_e_trans.delete(0, 'end')
-        global G_amount
-        tmp = int(G_amount) + int(dpo)
-        G_amount = str(tmp)
-        cursor.execute("update bankdata set amount='" +
-                       G_amount + "' where id='"+G_userid+"'")
-        cursor.execute("commit")
-
-        upg2_show()
-        MessageBox.showinfo("Update Status", "deposited Successfully")
-        con.close()
-
-
 def get():
     id = pg2_e_id.get()
     if (id == ""):
@@ -208,7 +104,6 @@ def get():
 
         con.close()
 
-
 def pg2_show():
     con = mysql.connect(host="localhost", user="root",
                         password="ankon20158", database="test")
@@ -218,44 +113,12 @@ def pg2_show():
     pg2_list.delete(0, pg2_list.size())
 
     for row in rows:
-        insertData = 'ID:' + str(row[0]) + '  Name:' + row[1] + \
+        insertData = '  ID:' + str(row[0]) + '  Name:' + row[1] + \
             '  Phone:' + row[2] + '  Amount:' + \
             str(row[4]) + '  Address:' + str(row[5])
         pg2_list.insert(pg2_list.size()+1, insertData)
 
     con.close()
-
-
-def apg2_show():
-    con = mysql.connect(host="localhost", user="root",
-                        password="ankon20158", database="test")
-    cursor = con.cursor()
-    cursor.execute("select * from admin")
-    rows = cursor.fetchall()
-    apg2_list.delete(0, apg2_list.size())
-    cnt = 1
-
-    for row in rows:
-        insertData = str(cnt) + ': ' + row[0]
-        apg2_list.insert(apg2_list.size()+1, insertData)
-        cnt = cnt+1
-
-    con.close()
-
-
-# def admin_check():
-#     pw = pg1_entry2.get()
-#     usr = pg1_entry.get()
-#     pg1_entry.delete(0, 'end')
-#     pg1_entry2.delete(0, 'end')
-#     if (usr != user_admin):
-#         MessageBox.showinfo("Login Status", "Invalid Username!")
-#     else:
-#         if (pw != password_admin):
-#             MessageBox.showinfo("Login Status", "Invalid Password!")
-#         else:
-#             show_frame(admin_page_2)
-
 
 def admin_check():
     pw = pg1_entry2.get()
@@ -286,6 +149,42 @@ def admin_check():
 
     con.close()
 
+def admin_insert():
+    name = apg1_entry.get()
+    password = apg1_entry2.get()
+
+    if (name == "" or password == ""):
+        MessageBox.showinfo("Insert Status", "All fields are required")
+    else:
+        con = mysql.connect(host="localhost", user="root",
+                            password="ankon20158", database="test")
+        cursor = con.cursor()
+        cursor.execute("insert into admin values('" +
+                       name+"','"+password+"')")
+        cursor.execute("commit")
+
+        apg1_entry.delete(0, 'end')
+        apg1_entry2.delete(0, 'end')
+
+        apg2_show()
+        MessageBox.showinfo("Insert Status", "Inserted Successfully")
+        con.close()
+
+def apg2_show():
+    con = mysql.connect(host="localhost", user="root",
+                        password="ankon20158", database="test")
+    cursor = con.cursor()
+    cursor.execute("select * from admin")
+    rows = cursor.fetchall()
+    apg2_list.delete(0, apg2_list.size())
+    cnt = 1
+
+    for row in rows:
+        insertData = str(cnt) + ': ' + row[0]
+        apg2_list.insert(apg2_list.size()+1, insertData)
+        cnt = cnt+1
+
+    con.close()
 
 def user_check():
     pw = upg1_entry2.get()
@@ -313,14 +212,11 @@ def user_check():
             G_name = row[1]
 
         insertName = "Welcome, " + G_name + "       "
-    upg2_welcome = Label(
-        user_page_2, text=insertName, font=('bold', 15))
+    upg2_welcome = Label(user_page_2, text=insertName, font=('bold', 15))
     upg2_welcome.place(x=20, y=20)
-    upg2_amount1 = Label(
-        user_page_2, text="Your Current Amount:", font=('bold', 15))
+    upg2_amount1 = Label(user_page_2, text="Your Current Amount:", font=('bold', 15))
     upg2_amount1.place(x=600, y=90)
-    upg2_amount2 = Label(
-        user_page_2, text=G_amount + "   ", font=('bold', 20))
+    upg2_amount2 = Label(user_page_2, text=G_amount + "   ", font=('bold', 20))
     upg2_amount2.place(x=650, y=120)
     if (idfound != True):
         MessageBox.showinfo("Login Status", "Invalid ID!")
@@ -332,6 +228,79 @@ def user_check():
 
     con.close()
 
+def user_update():
+    phone = upg2_e_phone.get()
+    password = upg2_e_pass.get()
+    address = upg2_e_address.get()
+
+    if (phone == "" or password == "" or address == ""):
+        MessageBox.showinfo("Update Status", "All fields are required")
+    else:
+        con = mysql.connect(host="localhost", user="root",
+                            password="ankon20158", database="test")
+        cursor = con.cursor()
+        cursor.execute("update bankdata set password='"+password +
+                       "',phone='"+phone + "',address='"+address + "' where id='"+G_userid+"'")
+        cursor.execute("commit")
+
+        upg2_e_pass.delete(0, 'end')
+        upg2_e_phone.delete(0, 'end')
+        upg2_e_address.delete(0, 'end')
+        upg2_show()
+        MessageBox.showinfo("Update Status", "Updated Successfully")
+        con.close()
+
+def user_withdraw():
+    wd = upg2_e_trans.get()
+    dpo = "0"
+
+    if (wd == ""):
+        MessageBox.showinfo("Update Status", "No amount written to withdraw")
+    else:
+        con = mysql.connect(host="localhost", user="root",
+                            password="ankon20158", database="test")
+        cursor = con.cursor()
+        cursor.execute("insert into transactions values('" +
+                       G_userid+"','"+wd+"','"+dpo+"')")
+        cursor.execute("commit")
+
+        upg2_e_trans.delete(0, 'end')
+        global G_amount
+        tmp = int(G_amount) - int(wd)
+        G_amount = str(tmp)
+        cursor.execute("update bankdata set amount='" +
+                       G_amount + "' where id='"+G_userid+"'")
+        cursor.execute("commit")
+
+        upg2_show()
+        MessageBox.showinfo("Update Status", "Withdrawn Successfully")
+        con.close()
+
+def user_deposit():
+    dpo = upg2_e_trans.get()
+    wd = "0"
+
+    if (dpo == ""):
+        MessageBox.showinfo("Update Status", "No amount written to deposit")
+    else:
+        con = mysql.connect(host="localhost", user="root",
+                            password="ankon20158", database="test")
+        cursor = con.cursor()
+        cursor.execute("insert into transactions values('" +
+                       G_userid+"','"+wd+"','"+dpo+"')")
+        cursor.execute("commit")
+
+        upg2_e_trans.delete(0, 'end')
+        global G_amount
+        tmp = int(G_amount) + int(dpo)
+        G_amount = str(tmp)
+        cursor.execute("update bankdata set amount='" +
+                       G_amount + "' where id='"+G_userid+"'")
+        cursor.execute("commit")
+
+        upg2_show()
+        MessageBox.showinfo("Update Status", "deposited Successfully")
+        con.close()
 
 def upg2_show():
     insertName = "Welcome, " + G_name + "       "
@@ -345,30 +314,26 @@ def upg2_show():
         user_page_2, text=G_amount + "    ", font=('bold', 20))
     upg2_amount2.place(x=650, y=120)
 
-
 root = Tk()
 root.geometry("900x400")
 root.title("Bank Management Project")
 root.rowconfigure(0, weight=1)
 root.columnconfigure(0, weight=1)
-# root.state('zoomed')
 
 
 page0 = Frame(root)
 admin_page_1 = Frame(root)
-admin_page_2 = Frame(root)
 user_page_1 = Frame(root)
-user_page_2 = Frame(root)
 c_admin_page = Frame(root)
+admin_page_2 = Frame(root)
+user_page_2 = Frame(root)
 
 
 for frame in (page0, admin_page_1, admin_page_2, user_page_1, user_page_2, c_admin_page):
     frame.grid(row=0, column=0, sticky='nsew')
 
-
 def show_frame(frame):
     frame.tkraise()
-
 
 show_frame(page0)
 
@@ -379,7 +344,6 @@ pg0_button.place(x=100, y=90)
 pg0_button = Button(page0, text='ADMIN', font=(
     'Arial', 20, 'bold'), command=lambda: show_frame(admin_page_1))
 pg0_button.place(x=350, y=90)
-
 
 # ============= admin login page =========
 pg1_label = Label(admin_page_1, text='Username', font=('Arial', 15, 'bold'))
@@ -394,21 +358,13 @@ pg1_label2.place(x=50, y=150)
 pg1_entry2 = Entry(admin_page_1)
 pg1_entry2.place(x=170, y=155)
 
-# pg1_label = Label(admin_page_1, text='Username', font=('Arial', 15, 'bold'))
-# pg1_label.place(x=300, y=100)
-
-# pg1_entry = Entry(admin_page_1)
-# pg1_entry.place(x=420, y=106)
-
-# pg1_label3 = Label(admin_page_1, text='Password', font=('Arial', 15, 'bold'))
-# pg1_label3.place(x=300, y=150)
-
-# pg1_entry2 = Entry(admin_page_1)
-# pg1_entry2.place(x=420, y=155)
-
 pg1_button = Button(admin_page_1, text='LOGIN', font=(
     'Arial', 13, 'bold'), command=admin_check)
 pg1_button.place(x=170, y=200)
+
+pg1_button = Button(admin_page_1, text='Back', font=(
+    'Arial', 13, 'bold'), command=lambda: show_frame(page0))
+pg1_button.place(x=750, y=350)
 
 # -------------- create admin page --------------------------------
 apg1_label = Label(c_admin_page, text='Username', font=('Arial', 15, 'bold'))
@@ -436,19 +392,6 @@ apg2_button.place(x=750, y=350)
 
 apg2_show()
 
-# pg1_label = Label(admin_page_1, text='Username', font=('Arial', 15, 'bold'))
-# pg1_label.place(x=300, y=100)
-
-# pg1_entry = Entry(admin_page_1)
-# pg1_entry.place(x=420, y=106)
-
-# pg1_label3 = Label(admin_page_1, text='Password', font=('Arial', 15, 'bold'))
-# pg1_label3.place(x=300, y=150)
-
-# pg1_entry2 = Entry(admin_page_1)
-# pg1_entry2.place(x=420, y=155)
-
-
 # ============= user login page =========
 upg1_label = Label(user_page_1, text='ID', font=('Arial', 15, 'bold'))
 upg1_label.place(x=50, y=100)
@@ -466,6 +409,10 @@ upg1_button = Button(user_page_1, text='LOGIN', font=(
     'Arial', 13, 'bold'), command=user_check)
 upg1_button.place(x=170, y=200)
 
+upg1_button = Button(user_page_1, text='Back', font=(
+    'Arial', 13, 'bold'), command=lambda: show_frame(page0))
+upg1_button.place(x=750, y=350)
+
 # ============= admin Page 2 =========
 pg2_id = Label(admin_page_2, text='Enter ID', font=('bold', 10))
 pg2_id.place(x=20, y=30)
@@ -476,14 +423,16 @@ pg2_name.place(x=20, y=60)
 pg2_phone = Label(admin_page_2, text='Enter Phone', font=('bold', 10))
 pg2_phone.place(x=20, y=90)
 
-pg2_address = Label(admin_page_2, text='Enter Address', font=('bold', 10))
-pg2_address.place(x=20, y=120)
-
 pg2_pass = Label(admin_page_2, text='Enter Password', font=('bold', 10))
 pg2_pass.place(x=20, y=150)
 
 pg2_amount = Label(admin_page_2, text='Enter Amount', font=('bold', 10))
 pg2_amount.place(x=20, y=180)
+
+pg2_address = Label(admin_page_2, text='Enter Address', font=('bold', 10))
+pg2_address.place(x=20, y=120)
+
+
 
 pg2_e_id = Entry(admin_page_2)
 pg2_e_id.place(x=150, y=30)
@@ -577,8 +526,6 @@ upg2_logout = Button(user_page_2, text='Logout', font=(
     "italic", 10), bg="white", command=lambda: show_frame(page0))
 upg2_logout.place(x=750, y=10)
 
-# upg2_list = Listbox(user_page_2, width = 48)
-# upg2_list.place(x=290, y=30)
 upg2_show()
 
 root.mainloop()
