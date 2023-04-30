@@ -2,19 +2,18 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-
 import javax.swing.*;
 
 
 
-public class LoginForm extends JFrame {
+public class admin extends JFrame {
     final private Font mainFont = new Font("Segoe print", Font.BOLD, 18);
     JTextField tfEmail;
     JPasswordField pfPassword;
 
     public void initialize() {
         /*************** Form Panel ***************/
-        JLabel lbLoginForm = new JLabel("Login Form", SwingConstants.CENTER);
+        JLabel lbLoginForm = new JLabel("Create Admin", SwingConstants.CENTER);
         lbLoginForm.setFont(mainFont);
 
         JLabel lbEmail = new JLabel("Username");
@@ -39,7 +38,7 @@ public class LoginForm extends JFrame {
         formPanel.add(pfPassword);
 
         /*************** Buttons Panel ***************/
-        JButton btnLogin = new JButton("Login");
+        JButton btnLogin = new JButton("Create");
         btnLogin.setFont(mainFont);
         btnLogin.addActionListener(new ActionListener() {
 
@@ -51,15 +50,13 @@ public class LoginForm extends JFrame {
                 User user = getAuthenticatedUser(email, password);
 
                 if (user != null) {
-                    MainFrame mainFrame = new MainFrame();
-                    mainFrame.initialize();
-                    dispose();
+                    
+                    
                 }
-                else {
-                    JOptionPane.showMessageDialog(LoginForm.this,
-                            "Username or Password Invalid",
-                            "Try again",
-                            JOptionPane.ERROR_MESSAGE);
+                else{
+                    LoginForm obj1 = new LoginForm();
+                    obj1.initialize();
+                dispose();
                 }
             }
             
@@ -71,30 +68,20 @@ public class LoginForm extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                LoginForm obj1 = new LoginForm();
+                    obj1.initialize();
                 dispose();
             }
             
         });
 
-        JButton create = new JButton("Create");
-        create.setFont(mainFont);
-        create.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                admin admin = new admin();
-                    admin.initialize();
-                    dispose();
-            }
-            
-        });
 
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new GridLayout(1, 2, 10, 0));
         buttonsPanel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
         buttonsPanel.add(btnLogin);
         buttonsPanel.add(btnCancel);
-        buttonsPanel.add(create);
+        
 
 
 
@@ -102,7 +89,7 @@ public class LoginForm extends JFrame {
         add(formPanel, BorderLayout.NORTH);
         add(buttonsPanel, BorderLayout.SOUTH);
 
-        setTitle("Login Form");
+        setTitle("Admin Form");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setSize(500, 400);
         setMinimumSize(new Dimension(350, 450));
@@ -115,31 +102,14 @@ public class LoginForm extends JFrame {
     private User getAuthenticatedUser(String username, String password) {
         User user = null;
 
-        final String DB_URL = "jdbc:mysql://localhost:3306/login";
-        final String USERNAME = "root";
-        final String PASSWORD = "ankon20158";
-
+      
         try{
-            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/login","root","ankon20158");
             // Connected to database successfully...
-
-            String sql = "SELECT * FROM login.admin WHERE username=? AND password=?";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                user = new User();
-               
-                user.username = resultSet.getString("username");
-                
-                
-                user.password = resultSet.getString("password");
-            }
-
-            preparedStatement.close();
+            Statement sta = conn.createStatement();
+            String sql = "INSERT INTO login.admin VALUES('"+username+"','"+password+"')";
+            sta.executeUpdate(sql);
+            JOptionPane.showMessageDialog(this,"The record inserted");
             conn.close();
 
         }catch(Exception e){

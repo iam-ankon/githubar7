@@ -1,41 +1,65 @@
-import javax.swing.BorderFactory;
-
-import javax.swing.*;
-import javax.swing.WindowConstants;
-
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.*;
-public class frame implements ActionListener {
+
+
+import javax.swing.*;
+
+
+
+public class frame extends JFrame {
     final private Font mainFont = new Font("Segoe print", Font.BOLD, 18);
-    JFrame frame = new JFrame();
-    JButton b;
-    public void init(){
-        JLabel lbLoginForm = new JLabel("Login Form", SwingConstants.CENTER);
+    JTextField tfEmail;
+    JPasswordField pfPassword;
+
+    public void initialize() {
+        /*************** Form Panel ***************/
+        JLabel lbLoginForm = new JLabel("Pharmacy Management", SwingConstants.CENTER);
         lbLoginForm.setFont(mainFont);
+
+
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(new GridLayout(0, 1, 10, 10));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
+        formPanel.add(lbLoginForm);
         
-        b = new JButton();
-        b.setBounds(200, 200, 150, 50);
-        b.addActionListener(this);
-        b.setText("Tab For Login");
-        b.setFocusable(false);
-        b.setBorder(BorderFactory.createEtchedBorder());
-        frame.setTitle("Pharmacy Management");
-        frame.setLayout(null);
-        frame.setSize(550,500);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        frame.setLocationRelativeTo(null);
-        frame.add(b);
-    }
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==b){
-            frame.dispose();
-            LoginForm ob1 = new LoginForm();
-            ob1.initialize();
+        /*************** Buttons Panel ***************/
+        
+
+        JButton btnCancel = new JButton("Tab For Login");
+        btnCancel.setFont(mainFont);
+        btnCancel.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LoginForm obj1 = new LoginForm();
+                    obj1.initialize();
+                dispose();
+            }
             
-        }
+        });
+
+
+        JPanel buttonsPanel = new JPanel();
+        //buttonsPanel.setLayout(new GridLayout(1, 2, 10, 0));
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
+        buttonsPanel.add(btnCancel);
         
+
+
+
+        /*************** Initialise the frame ***************/
+        add(formPanel, BorderLayout.NORTH);
+        add(buttonsPanel, BorderLayout.SOUTH);
+
+        setTitle("Pharmacy Manage");
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setSize(600, 500);
+        setMinimumSize(new Dimension(350, 450));
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
+
+   
+   
 }
